@@ -40,7 +40,7 @@ const ProfileImageModal = ({
         removeImage: true,
       });
 
-      setUser(data);
+setUser(data);
       showAlert("Profile image removed", "success");
 
       setOpenRemoveDialog(false);

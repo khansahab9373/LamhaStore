@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useAlert } from "../context/AlertContext";
 import { Mail, User, MessageSquare } from "lucide-react";
+import api from "../services/api"; // ✅ backend call
 
 const Contact = () => {
   const { showAlert } = useAlert();
@@ -19,17 +20,16 @@ const Contact = () => {
     e.preventDefault();
 
     try {
-      await emailjs.send(
-        "service_xxxxx",
-        "template_yyyyy",
-        form,
-        "public_zzzzz"
-      );
+      // ✅ Nodemailer backend API call
+      await api.post("/users/contact", form);
 
       showAlert("Message sent successfully!", "success");
       setForm({ name: "", email: "", message: "" });
     } catch (err) {
-      showAlert("Failed to send message", "error");
+      showAlert(
+        err.response?.data?.message || "Failed to send message",
+        "error"
+      );
     }
   };
 

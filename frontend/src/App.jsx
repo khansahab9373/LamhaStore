@@ -38,6 +38,7 @@ import AdminUsers from "./admin/pages/AdminUsers";
 
 // 🔥 THEME CONTEXT (NEXT STEP ME FILE AAYEGI)
 import Wishlist from "./pages/Wishlist";
+import PageNotFound from "./pages/PageNotFound";
 
 const App = () => {
   return (
@@ -53,6 +54,8 @@ const App = () => {
           <Route path="/product/:id" element={<ProductDetail />} />
           <Route path="/terms" element={<Terms />} />
           <Route path="/privacy" element={<Privacy />} />
+          <Route path="*" element={<PageNotFound />} />
+
 
           {/* protected routes */}
           <Route

@@ -1,8 +1,8 @@
 import axios from "axios";
 
 const api = axios.create({
-  //  baseURL:"https://lamhastore.vercel.app/api"
-  baseURL: "http://localhost:4000/api",
+   baseURL:"https://lamha-store.vercel.app/api",
+  // baseURL: "http://localhost:4000/api",
 });
 
 api.interceptors.request.use((config) => {

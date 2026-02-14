@@ -45,7 +45,7 @@ const EditProfile = () => {
         headers: { "Content-Type": "multipart/form-data" },
       });
 
-      setUser(data);
+setUser(data);
       showAlert("Profile updated successfully", "success");
       navigate("/profile");
     } catch (err) {
@@ -128,4 +128,4 @@ const EditProfile = () => {
   );
 };
 
-export default EditProfile;
+export default EditProfile;   

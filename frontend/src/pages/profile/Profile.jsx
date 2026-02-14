@@ -36,6 +36,7 @@ const Profile = () => {
   const [openImageModal, setOpenImageModal] = useState(false);
   const [openLogoutDialog, setOpenLogoutDialog] = useState(false);
   const [openDeleteDialog, setOpenDeleteDialog] = useState(false);
+const [deletePassword, setDeletePassword] = useState("");
 
   if (!user) return <p className="text-center mt-10">Loading profile...</p>;
 
@@ -48,20 +49,25 @@ const Profile = () => {
 
   // ❌ Delete account
   const handleDeleteAccount = async () => {
-    try {
-      await api.delete("/users/profile");
-      showAlert("Account deleted successfully", "success");
-      logout();
-      navigate("/login");
-    } catch (err) {
-      showAlert(
-        err.response?.data?.message || "Failed to delete account",
-        "error",
-      );
-    } finally {
-      setOpenDeleteDialog(false);
-    }
-  };
+  try {
+    await api.delete("/users/profile", {
+      data: { password: deletePassword },
+    });
+
+    showAlert("Account deleted successfully", "success");
+    logout();
+    navigate("/");
+  } catch (err) {
+    showAlert(
+      err.response?.data?.message || "Failed to delete account",
+      "error"
+    );
+  } finally {
+    setOpenDeleteDialog(false);
+    setDeletePassword("");
+  }
+};
+
 
   return (
     <>
@@ -264,23 +270,41 @@ const Profile = () => {
         </DialogActions>
       </Dialog>
 
-      <Dialog
-        open={openDeleteDialog}
-        onClose={() => setOpenDeleteDialog(false)}
-      >
-        <DialogTitle>Delete Account</DialogTitle>
-        <DialogContent>This action is permanent.</DialogContent>
-        <DialogActions>
-          <Button onClick={() => setOpenDeleteDialog(false)}>Cancel</Button>
-          <Button
-            color="error"
-            variant="contained"
-            onClick={handleDeleteAccount}
-          >
-            Delete
-          </Button>
-        </DialogActions>
-      </Dialog>
+     <Dialog
+  open={openDeleteDialog}
+  onClose={() => setOpenDeleteDialog(false)}
+>
+  <DialogTitle>Delete Account</DialogTitle>
+
+  <DialogContent>
+    <p className="mb-3">
+      This action is permanent. Enter your password to confirm.
+    </p>
+
+    <input
+      type="password"
+      placeholder="Enter your password"
+      value={deletePassword}
+      onChange={(e) => setDeletePassword(e.target.value)}
+      className="w-full border rounded px-3 py-2 mt-2"
+    />
+  </DialogContent>
+
+  <DialogActions>
+    <Button onClick={() => setOpenDeleteDialog(false)}>
+      Cancel
+    </Button>
+
+    <Button
+      color="error"
+      variant="contained"
+      onClick={handleDeleteAccount}
+    >
+      Delete
+    </Button>
+  </DialogActions>
+</Dialog>
+
 
       <ProfileImageModal
         isOpen={openImageModal}
