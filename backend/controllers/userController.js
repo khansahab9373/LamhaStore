@@ -200,6 +200,50 @@ export const resendOtp = async (req, res, next) => {
     next(error);
   }
 };
+export const sendContactMessage = async (req, res, next) => {
+  try {
+    const { name, email, message } = req.body;
+
+    if (!name || !email || !message) {
+      return res.status(400).json({
+        message: "All fields are required",
+      });
+    }
+
+    // 📩 Email to Admin
+    await sendEmail({
+      to: process.env.EMAIL_USER, // your support email
+      subject: "New Contact Message - BuyToro",
+      html: `
+        <h2>New Contact Form Submission</h2>
+        <p><strong>Name:</strong> ${name}</p>
+        <p><strong>Email:</strong> ${email}</p>
+        <p><strong>Message:</strong></p>
+        <p>${message}</p>
+      `,
+    });
+
+    // 📩 Confirmation email to user
+    await sendEmail({
+      to: email,
+      subject: "We received your message - BuyToro",
+      html: `
+        <h2>Thank you for contacting BuyToro</h2>
+        <p>Hi ${name},</p>
+        <p>We have received your message and our team will get back to you soon.</p>
+        <br/>
+        <p><strong>Your Message:</strong></p>
+        <p>${message}</p>
+      `,
+    });
+
+    res.status(200).json({
+      message: "Message sent successfully",
+    });
+  } catch (error) {
+    next(error);
+  }
+};
 
 /* ===========================
    LOGIN USER
@@ -233,11 +277,11 @@ export const loginUser = async (req, res, next) => {
 
     res.status(200).json({
       message: "Login successful",
-      // id: user._id,
-      // name: user.name,
-      // email: user.email,
+      id: user._id,
+      name: user.name,
+      email: user.email,
       isAdmin: user.isAdmin,
-      // profileImage: user.profileImage,
+      profileImage: user.profileImage,
       token: generateToken(user._id),
     });
   } catch (error) {
